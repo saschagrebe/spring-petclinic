@@ -15,6 +15,10 @@
  */
 package org.springframework.samples.petclinic.util;
 
+import java.util.Date;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.NDC;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,8 +39,10 @@ import org.springframework.util.StopWatch;
 @ManagedResource("petclinic:type=CallMonitor")
 @Aspect
 public class CallMonitoringAspect {
+	
+	public static Logger log = Logger.getLogger(CallMonitoringAspect.class);
 
-    private boolean enabled = true;
+	private boolean enabled = true;
 
     private int callCount = 0;
 
@@ -72,17 +78,33 @@ public class CallMonitoringAspect {
     		return 0;
     }
 
-
     @Around("within(@org.springframework.stereotype.Repository *)")
-    public Object invoke(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object invokeRepository(ProceedingJoinPoint joinPoint) throws Throwable {
+    	return invoke(joinPoint);
+    }
+    
+    @Around("within(@org.springframework.stereotype.Service *)")
+    public Object invokeService(ProceedingJoinPoint joinPoint) throws Throwable {
+    	return invoke(joinPoint);
+    }
+    
+    @Around("within(@org.springframework.stereotype.Controller *)")
+    public Object invokeController(ProceedingJoinPoint joinPoint) throws Throwable {
+    	return invoke(joinPoint);
+    }
+    
+    private Object invoke(ProceedingJoinPoint joinPoint) throws Throwable {
+    	NDC.push("Call started " +  new Date());
+    	
         if (this.enabled) {
             StopWatch sw = new StopWatch(joinPoint.toShortString());
-
+            
             sw.start("invoke");
             try {
                 return joinPoint.proceed();
             } finally {
                 sw.stop();
+                log.info("Call took " + sw.getTotalTimeSeconds() + " seconds");
                 synchronized (this) {
                     this.callCount++;
                     this.accumulatedCallTime += sw.getTotalTimeMillis();
