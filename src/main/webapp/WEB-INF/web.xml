@@ -63,6 +63,10 @@
 	    <filter-name>javamelody</filter-name>
 	    <filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 	    <async-supported>true</async-supported>
+	    <init-param>
+	    	<param-name>sampling-seconds</param-name>
+	    	<param-value>10</param-value>
+	    </init-param>
 	</filter>
 	
 	<filter-mapping>
