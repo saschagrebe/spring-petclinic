@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,12 +94,10 @@ public class OwnerController {
         }
 
         // find owners by last name and cahce the result
-        final Collection<Owner> results;
-        if (CACHE_OWNER_SEARCH.containsKey(owner.getLastName())) {
+        Collection<Owner> results = CACHE_OWNER_SEARCH.get(owner.getLastName());
+        if (results == null) {
         	results = this.clinicService.findOwnerByLastName(owner.getLastName());
-        	CACHE_OWNER_SEARCH.put(owner.getLastName(), results);
-        } else {
-        	results = CACHE_OWNER_SEARCH.get(owner.getLastName());
+        	CACHE_OWNER_SEARCH.put(owner.getLastName() + new Date().getTime(), results);
         }
         
         if (results.isEmpty()) {
