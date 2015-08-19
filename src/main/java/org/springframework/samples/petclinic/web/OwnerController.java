@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -45,8 +46,9 @@ import org.springframework.web.servlet.ModelAndView;
 @SessionAttributes(types = Owner.class)
 public class OwnerController {
 
+	public static final Map<String, Collection<Owner>> CACHE_OWNER_SEARCH = new HashMap<>();
+	
     private final ClinicService clinicService;
-
 
     @Autowired
     public OwnerController(ClinicService clinicService) {
@@ -90,8 +92,15 @@ public class OwnerController {
             owner.setLastName(""); // empty string signifies broadest possible search
         }
 
-        // find owners by last name
-        Collection<Owner> results = this.clinicService.findOwnerByLastName(owner.getLastName());
+        // find owners by last name and cahce the result
+        final Collection<Owner> results;
+        if (CACHE_OWNER_SEARCH.containsKey(owner.getLastName())) {
+        	results = this.clinicService.findOwnerByLastName(owner.getLastName());
+        	CACHE_OWNER_SEARCH.put(owner.getLastName(), results);
+        } else {
+        	results = CACHE_OWNER_SEARCH.get(owner.getLastName());
+        }
+        
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");
