@@ -269,6 +269,13 @@
     		<artifactId>json-simple</artifactId>
     		<scope>compile</scope>
     	</dependency>
+
+    	<!-- javamelody-core -->
+		<dependency>
+		    <groupId>net.bull.javamelody</groupId>
+		    <artifactId>javamelody-core</artifactId>
+		    <version>1.56.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Maven plugin versions are mentioned in order to guarantee the build reproducibility in the long term -->

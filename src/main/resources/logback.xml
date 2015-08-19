@@ -18,7 +18,10 @@
 
 	<!--<logger name="org.hibernate" level="debug"/> -->
     <logger name="org.springframework.samples.petclinic" level="debug"/>
-         
+    
+    <!-- LEVEL CAN NOT BE DEBUG to avoid exceptions -->
+	<logger name="org.apache" level="INFO"></logger>
+    
     <root level="debug">
         <appender-ref ref="console"/>
     </root>

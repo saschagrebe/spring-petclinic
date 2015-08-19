@@ -8,7 +8,7 @@
     <display-name>Spring PetClinic</display-name>
     <description>Spring PetClinic sample application</description>
     
-    <context-param>
+	<context-param>
         <param-name>spring.profiles.active</param-name>
         <param-value>jpa</param-value>
     </context-param>
@@ -33,7 +33,7 @@
 	-->
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring/business-config.xml, classpath:spring/tools-config.xml</param-value>
+        <param-value>classpath:net/bull/javamelody/monitoring-spring.xml, classpath:spring/business-config.xml, classpath:spring/tools-config.xml</param-value>
     </context-param>
 
     <listener>
@@ -57,6 +57,22 @@
         <servlet-name>petclinic</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    
+	<!-- javamelody -->
+	<filter>
+	    <filter-name>javamelody</filter-name>
+	    <filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	    <async-supported>true</async-supported>
+	</filter>
+	
+	<filter-mapping>
+	    <filter-name>javamelody</filter-name>
+	    <url-pattern>/monitoring</url-pattern>
+	</filter-mapping>
+	
+	<listener>
+	    <listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
 
     <!-- Dandelion servlet definition and mapping -->
     <servlet>
@@ -97,7 +113,7 @@
         <filter-name>dandelionFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+    
     <!-- used so we can use forms of method type 'PUT' and 'DELETE' (such as in the Pet form)
 see here: http://static.springsource.org/spring/docs/current/spring-framework-reference/html/view.html#rest-method-conversion
 -->
@@ -125,5 +141,4 @@ see here: http://static.springsource.org/spring/docs/current/spring-framework-re
     		See inside spring/mvc-core-config.xml : 
     		<mvc:view-controller path="/" view-name="welcome" /> 
     -->
-
 </web-app>
